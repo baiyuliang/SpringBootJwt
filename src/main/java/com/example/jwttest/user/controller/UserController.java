@@ -65,8 +65,8 @@ public class UserController {
         return CommonResult.success("无Token测试成功");
     }
 
-    @GetMapping("/testRes")
-    public CommonResult testRes() {
+    @GetMapping("/testPerm")
+    public CommonResult testPerm() {
         return CommonResult.success("权限测试成功");
     }
 }
