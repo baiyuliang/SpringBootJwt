@@ -4,7 +4,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -12,10 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +24,6 @@ import java.util.Map;
  * {"sub":"wang","created":1489079981393,"exp":1489684781}
  * signature的生成算法：
  * HMACSHA512(base64UrlEncode(header) + "." +base64UrlEncode(payload),secret)
- * Created by macro on 2018/4/26.
  */
 public class JwtTokenUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
@@ -43,18 +37,10 @@ public class JwtTokenUtil {
     private String tokenType;
 
 
-    public SecretKey generalKeyByDecoders() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-    }
-
-
     /**
      * 根据负责生成JWT的token
      */
     private String generateToken(Map<String, Object> claims) {
-//        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-//        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secret);
-//        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(generateExpirationDate())
