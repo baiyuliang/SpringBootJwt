@@ -1,5 +1,5 @@
 # SpringBootJwt
-SpringBoot整合Security+Jwt，前后端分离
+SpringBoot+Security+Jwt+MybatisPlus
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/4b96098b9a31495bbd555a1f06ff9dd2.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA55m9546J5qKB,size_14,color_FFFFFF,t_70,g_se,x_16)
 
