@@ -63,7 +63,7 @@ public class JwtFilter extends OncePerRequestFilter {
             System.out.println("用户" + username + "发起请求...");
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                if (userDetails != null && jwtTokenUtil.validateToken(authToken, userDetails)) {
                     System.out.println("Jwt请求验证通过...");
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
