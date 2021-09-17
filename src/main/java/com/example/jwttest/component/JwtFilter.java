@@ -1,6 +1,8 @@
 package com.example.jwttest.component;
 
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
+import com.example.jwttest.api.CommonResult;
 import com.example.jwttest.config.IgnoreUrlsConfig;
 import com.example.jwttest.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
         //如果requestURI在白名单中直接放行
         PathMatcher pathMatcher = new AntPathMatcher();
         for (String url : ignoreUrlsConfig.getUrls()) {
-            if (pathMatcher.match(contextPath + url, URLUtil.getPath(request.getRequestURI()))) {
+            if (pathMatcher.match(contextPath + url, requestURI)) {
                 System.out.println("白名单通过..." + requestURI);
                 chain.doFilter(request, response);
                 return;
@@ -66,9 +68,16 @@ public class JwtFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    chain.doFilter(request, response);
+                    return;
                 }
             }
         }
-        chain.doFilter(request, response);
+
+        //未通过验证，直接返回错误
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.getWriter().println(JSONUtil.parse(CommonResult.unauthorized("token验证失败")));
+        response.getWriter().flush();
     }
 }

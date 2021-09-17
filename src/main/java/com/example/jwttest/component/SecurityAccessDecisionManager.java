@@ -19,10 +19,11 @@ public class SecurityAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
         System.out.println("SecurityAccessDecisionManager...");
+        //authentication.getAuthorities()：用户所拥有的路径访问权限，在获取UserDetails验证jwt时赋予
+        //configAttribute.getAttribute(): 在SecurityMetadataSource中获取的用户访问路径，在配置中所需要的权限
         // 当接口未被配置资源时直接放行
         if (CollUtil.isEmpty(configAttributes)) return;
-        //authentication.getAuthorities()：在获取UserDetails验证jwt时赋予的路径访问权限
-        //configAttribute.getAttribute(): 在SecurityMetadataSource中获取的用户访问路径所需要的权限
+        if (CollUtil.isEmpty(authentication.getAuthorities())) throw new AccessDeniedException("该账号没有任何权限");
         System.out.println("用户拥有的路径访问权限：" + authentication.getAuthorities().toString());
         for (ConfigAttribute configAttribute : configAttributes) {
             //将访问所需资源或用户拥有资源进行比对
@@ -36,7 +37,7 @@ public class SecurityAccessDecisionManager implements AccessDecisionManager {
             }
         }
         System.out.println("security权限验证失败...");
-        throw new AccessDeniedException("AccessDeniedException");
+        throw new AccessDeniedException("权限验证失败");
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +28,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         User user = userMapper.selectOne(queryWrapper);
-        if (user != null) return new MyUserDetails(user, getResourceList(user.getRoleId()));
+        //如果用户被禁用，则不再查询权限表
+        if (user != null) {
+            return new MyUserDetails(user, user.getStatus() == 1 ? getResourceList(user.getRoleId()) : new ArrayList<>());
+        }
         return null;
     }
 
